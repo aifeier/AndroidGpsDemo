@@ -2,6 +2,7 @@ package demo.cwf.com.androidgpsdemo;
 
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -38,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start:
-                Location location = GPSLocation.getInstance(this).getLocation();
+//                Location location = GPSLocation.getInstance(this).getLocation(LocationManager.GPS_PROVIDER);
+//                Location location = GPSLocation.getInstance(this).getLocation(LocationManager.NETWORK_PROVIDER);
+                Location location = GPSLocation.getInstance(this).getLocation(LocationManager.PASSIVE_PROVIDER);
                 if (location != null) {
                     locationChangeListener.onChange(location);
                 }

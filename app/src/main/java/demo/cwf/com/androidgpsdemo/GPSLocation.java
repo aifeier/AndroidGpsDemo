@@ -53,6 +53,33 @@ public class GPSLocation {
         listeners = new ArrayList<>();
     }
 
+
+    public Location getLocation(String provider) {
+        //判断GPS是否正常启动
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(mContext, "请开启GPS导航...", Toast.LENGTH_SHORT).show();
+            //返回开启GPS导航设置界面
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
+            return null;
+        }
+
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        String bestProvider = locationManager.getBestProvider(getCriteria(), true);
+        return locationManager.getLastKnownLocation(provider);
+    }
+
     public Location getLocation() {
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
