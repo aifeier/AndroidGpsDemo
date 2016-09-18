@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.start).setOnClickListener(this);
         findViewById(R.id.start_listener_gps).setOnClickListener(this);
+        findViewById(R.id.start_listener_network).setOnClickListener(this);
         findViewById(R.id.stop_listener).setOnClickListener(this);
         findViewById(R.id.clear_list).setOnClickListener(this);
         locationList = new ArrayList<>();

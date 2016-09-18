@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -57,7 +58,18 @@ public class GPSLocation {
     public Location getLocation(String provider) {
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.i(TAG,"请开启GPS导航...");
             Toast.makeText(mContext, "请开启GPS导航...", Toast.LENGTH_SHORT).show();
+            //返回开启GPS导航设置界面
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
+            return null;
+        }
+
+        //判断GPS是否正常启动
+        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Log.i(TAG,"请开启网络定位...");
+            Toast.makeText(mContext, "请开启网络定位...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             mContext.startActivity(intent);
@@ -76,7 +88,6 @@ public class GPSLocation {
             Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
             return null;
         }
-        String bestProvider = locationManager.getBestProvider(getCriteria(), true);
         return locationManager.getLastKnownLocation(provider);
     }
 
@@ -109,7 +120,18 @@ public class GPSLocation {
     public void startListener() {
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.i(TAG,"缺少访问地理位置的权限");
             Toast.makeText(mContext, "请开启GPS导航...", Toast.LENGTH_SHORT).show();
+            //返回开启GPS导航设置界面
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
+            return;
+        }
+
+        //判断GPS是否正常启动
+        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Log.i(TAG,"请开启网络定位...");
+            Toast.makeText(mContext, "请开启网络定位...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             mContext.startActivity(intent);
@@ -129,12 +151,13 @@ public class GPSLocation {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.i(TAG,"缺少访问地理位置的权限");
             Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
             return;
         }
 //        Location location = locationManager.getLastKnownLocation(bestProvider);
         //监听状态
-//        locationManager.addGpsStatusListener(listener);
+        locationManager.addGpsStatusListener(gpsListtener);
         //绑定监听，有4个参数
         //参数1，设备：有GPS_PROVIDER和NETWORK_PROVIDER两种
         //参数2，位置信息更新周期，单位毫秒
@@ -161,11 +184,19 @@ public class GPSLocation {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.i(TAG,"缺少访问地理位置的权限");
             Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
             return;
         }
         locationManager.removeUpdates(locationListener);
     }
+
+    private GpsStatus.Listener gpsListtener = new GpsStatus.Listener() {
+        @Override
+        public void onGpsStatusChanged(int i) {
+
+        }
+    };
 
 
     private LocationListener locationListener = new LocationListener() {
