@@ -16,10 +16,14 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tbruyelle.rxpermissions.RxPermissions;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import rx.functions.Action1;
 
 /**
  * Created at 陈 on 2016/9/14.
@@ -52,13 +56,23 @@ public class GPSLocation {
         this.mContext = mContext;
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         listeners = new ArrayList<>();
+        RxPermissions.getInstance(mContext)
+                .request(Manifest.permission.ACCESS_COARSE_LOCATION
+                        , Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (!aBoolean)
+                            Toast.makeText(GPSLocation.this.mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
     public Location getLocation(String provider) {
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.i(TAG,"请开启GPS导航...");
+            Log.i(TAG, "请开启GPS导航...");
             Toast.makeText(mContext, "请开启GPS导航...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -68,7 +82,7 @@ public class GPSLocation {
 
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Log.i(TAG,"请开启网络定位...");
+            Log.i(TAG, "请开启网络定位...");
             Toast.makeText(mContext, "请开启网络定位...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -120,7 +134,7 @@ public class GPSLocation {
     public void startListener() {
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.i(TAG,"缺少访问地理位置的权限");
+            Log.i(TAG, "缺少访问地理位置的权限");
             Toast.makeText(mContext, "请开启GPS导航...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -130,7 +144,7 @@ public class GPSLocation {
 
         //判断GPS是否正常启动
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Log.i(TAG,"请开启网络定位...");
+            Log.i(TAG, "请开启网络定位...");
             Toast.makeText(mContext, "请开启网络定位...", Toast.LENGTH_SHORT).show();
             //返回开启GPS导航设置界面
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -151,7 +165,7 @@ public class GPSLocation {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Log.i(TAG,"缺少访问地理位置的权限");
+            Log.i(TAG, "缺少访问地理位置的权限");
             Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -184,7 +198,7 @@ public class GPSLocation {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Log.i(TAG,"缺少访问地理位置的权限");
+            Log.i(TAG, "缺少访问地理位置的权限");
             Toast.makeText(mContext, "缺少访问地理位置的权限", Toast.LENGTH_SHORT).show();
             return;
         }
